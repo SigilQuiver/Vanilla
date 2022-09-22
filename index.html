@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+
+
+<head>
+
+
+    <title>vanilla</title>
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+	<link href="https://fonts.googleapis.com/css?family=Nunito&display=swap" rel="stylesheet">
+	<link rel="icon" href="favicon.svg">
+	<style>
+		
+		*{transition: all 0.5s ease-in-out;box-sizing:border-box;font-smooth: auto;}
+		
+        body{
+			font-family:'Nunito', sans-serif;
+            background-color:#171740;
+			color:cyan;	
+        }
+		
+		::-webkit-scrollbar{
+			width:5px;
+			height:5px;
+		}
+		
+		::-webkit-scrollbar-track {
+			background-color:rgba(0,255,255,0.2);
+			//border-radius:2.5px;
+		}
+		::-webkit-scrollbar-thumb{
+			background-color:cyan;
+			border-radius:2.5px;
+		}
+		
+		
+		
+		.container-vertical-center {
+			display: flex;
+			justify-content: center;
+			flex-direction:column;
+			align-items: center;
+			align-text: center;
+			
+		}
+		
+		.container-vertical-left{
+			display:flex;
+			flex-direction: column;
+			float:left;
+			align-items:flex-start;
+		}
+		
+		.container-horizontal{
+			display:flex;
+			flex-direction:row;
+			align-items:center;
+			width:auto;
+			flex-grow:0;
+			flex-wrap:wrap;
+		}
+		
+		.border{
+			border: 2px solid cyan;
+			border-radius:5px;
+		}
+		
+		.outline{
+			outline: 2px solid cyan;
+			border-radius:5px;
+		}
+		
+		.empty{
+			font-family:'Nunito', sans-serif;
+			background-color:transparent;
+			color:cyan;	
+			font-size: 100%;
+			border:none;
+			outline:none;
+			margin:none;
+			padding:none;
+			appearance:none;
+			-webkit-appearance: none;
+		}
+		
+		.child-margins > *{
+			margin:3px;
+		}
+		
+		.middle-container{
+			height:auto;
+			transition: height 0.5s ease-in-out;
+			width: 70%;
+			max-width:800px;
+		}
+		
+		.search-bar-container .container-horizontal{background-color:transparent;transition: all 0.5s ease-in-out;padding:3px;}
+		.search-bar-container .container-horizontal:focus-within{background-color:rgba(0,255,255,0.1);}
+		.search-bar-container .container-vertical-left{width:100%;}
+		.search-bar-container button{width:100%;text-align:left;}
+		
+		.search-bar-input{
+			position:relative;
+			border-radius:5px;
+			
+			width:auto;
+			flex-grow:1;
+			transition: all 0.5s ease-in-out;
+		}
+		
+		::placeholder{
+			color:rgba(0,255,255,0.3);
+		}
+		
+		.button-style{
+			background-color:transparent;
+			transition: all 0.5s ease-in-out;
+			padding:3px;
+		}
+		.button-style:hover{
+			background-color:rgba(0,255,255,0.1);
+		}
+		
+		.loader{
+			padding:10px;
+			font-size:250%;
+			margin:auto;
+		}
+		
+		.no-wrap{
+			white-space:nowrap;
+		}
+		
+		.reverse-color{
+			background-color:cyan;
+			color:#171740;
+			border-radius:5px;
+		}
+		.reverse-color > *{
+			color:#171740;
+		}
+		
+		.vertical-line {
+			border-left:2px solid rgba(0,255,255,0.2);
+		}
+		
+		.horizontal-line{
+			border-top:2px solid rgba(0,255,255,0.2);
+			width:100%;
+			margin-top:0;
+		}
+		
+		.break {
+			flex-basis: 100%;
+			height: 0;
+			margin:0;
+		}
+		
+		
+		
+		.select{
+			position:relative;
+			transition: all 0.5s ease-in-out;
+		}
+		.select:hover{
+			background-color:rgba(0,255,255,0.1);
+		}
+		
+		select{
+			width:5em;
+		}
+		option{
+			background:#171740;
+			padding:4px;
+			border-radius:5px;
+		}
+		
+		img,video{
+			display:block;
+			width:100%;
+			height:auto;
+		}
+		
+		.img-wrap{
+			display:block;
+			max-height:90vh;
+			overflow-y:auto;
+			vertical-align:bottom;
+		}
+		
+		.post-footer{
+			display:block;
+			width:100%;
+			padding:4px;
+		}
+		
+		.post-expand{
+			position:absolute;
+			width:30%;
+			margin:auto;
+			top:100%;
+			left:35%;
+			border-radius: 0 0 5px 5px;
+		}
+		
+		.post-expand button{width:100%;}
+		
+    </style>
+	
+</head>
+<body>
+	<div class="container-vertical-center child-margins">
+		
+		<!--search bar-->
+		
+		<div class="border middle-container search-bar-container" id="search-bar-container" style="position:relative;">
+			<div class="container-horizontal child-margins">
+				<i class="fa fa-search"></i>
+				<input class="empty search-bar-input" id="search-bar-input" type="text" placeholder="search tags">
+			</div>
+			<div class="container-vertical-left" id="suggestion-container"></div>
+		</div>
+		
+		<!--selectors-->
+		
+		<div id="selectors" class="child-margins middle-container" style="display:flex; justify-content:space-between; flex-wrap:wrap;">
+			<span>
+			group insert:
+			<span class="border select child-margins">
+			<select class="empty" id="group-selector" >
+				<option>no group</option>
+			</select>
+			<i class="fa fa-arrows-v" style="position: absolute; right: 0; top: 0;"></i>
+			</span>
+			</span>
+			
+			<span>
+			rating:
+			<span class="border select child-margins">
+			<select class="empty" id="rating">
+				<option>safe</option>
+				<option>questionable</option>
+				<option>explicit</option>
+				
+			</select>
+			<i class="fa fa-arrows-v" style="position: absolute; right: 0; top: 0;"></i>
+			</span>
+			</span>
+			
+			<span>
+			min score:
+			<span class="border">
+			<input type="number" class="empty search-bar-input" placeholder="0" style="width:5em;" id="min-score">
+			</span>
+			</span>
+			
+			<span>
+			sort by:
+			<span class="border select child-margins" >
+			<select class="empty" id="score-sort">
+				<option>updated</option>
+				<option>score</option>
+			</select>
+			<i class="fa fa-arrows-v" style="position: absolute; right: 0; top: 0;"></i>
+			</span>
+			</span>
+			
+		</div class="selectors">
+		
+		<!--tag+group container-->
+		
+		<div class="border middle-container container-horizontal child-margins" id="tag-button-container" style="min-height:1em;max-height:15em;overflow-x:auto;margin-bottom:0px;border-radius:5px 5px 5px 0px;">
+			<div class="break" style="height:0;"></div>
+		</div>
+		
+		<!--group+search buttons-->
+		<div class="middle-container container-horizontal" style="margin:0;">
+		<div id="new-group-button" class="border" style="position:absolute;margin-top:0;margin-left:0;border-top:0;border-radius:0 0 5px 5px;align-self:flex-start;"><button class="empty button-style">new group</button></div>
+		<div class="border" style="display:block;margin-top:0;margin-left:auto;margin-right:auto;width:10em;border-top:0;border-radius:0 0 5px 5px;"><button id="tag-search-button" class="empty button-style">search with these tags</button></div>
+		</div>
+		<br>
+		<h2 id="results"></h2>
+		<br>
+		
+		<!--page navigation (top)-->
+		<div class="page-container middle-container container-horizontal" style="display:none;justify-content:space-between;align-items:stretch">
+			<span class="border page-last" style="width:5em;display:inline-block;"><button class="empty button-style" style="width:100%;text-align:center;"><i class="fa fa-angle-double-left" style="pointer-events:none;"></i></button></span>
+			<span class="border page-previous" style="width:5em;display:inline-block;"><button class="empty button-style" style="width:100%;text-align:center;"><i class="fa fa-angle-left" style="pointer-events:none;"></i></button></span>
+			<span class="border page-input">
+			<input type="number" class="empty search-bar-input" placeholder="0" style="width:5em;text-align:center">
+			</span>
+			<span class="border page-next" style="width:5em;display:inline-block;"><button class="empty button-style" style="width:100%;text-align:center;"><i class="fa fa-angle-right" style="pointer-events:none;"></i></button></span>
+			<span class="border page-first" style="width:5em;display:inline-block;"><button class="empty button-style" style="width:100%;text-align:center;"><i class="fa fa-angle-double-right" style="pointer-events:none;"></i></button></span>
+		</div>
+		<br>
+		
+		<!--posts-->
+		<div id="post-container" class="middle-container">
+		</div>
+		<!--page navigation (bot)-->
+		<br>
+		<div class="page-container middle-container container-horizontal" style="display:none;justify-content:space-between;align-items:stretch">
+			<span class="border page-last" style="width:5em;display:inline-block;"><button class="empty button-style" style="width:100%;text-align:center;"><i class="fa fa-angle-double-left" style="pointer-events:none;"></i></button></span>
+			<span class="border page-previous" style="width:5em;display:inline-block;"><button class="empty button-style" style="width:100%;text-align:center;"><i class="fa fa-angle-left" style="pointer-events:none;"></i></button></span>
+			<span class="border page-input">
+			<input type="number" class="empty search-bar-input" placeholder="0" style="width:5em;text-align:center">
+			</span>
+			<span class="border page-next" style="width:5em;display:inline-block;"><button class="empty button-style" style="width:100%;text-align:center;"><i class="fa fa-angle-right" style="pointer-events:none;"></i></button></span>
+			<span class="border page-first" style="width:5em;display:inline-block;"><button class="empty button-style" style="width:100%;text-align:center;"><i class="fa fa-angle-double-right" style="pointer-events:none;"></i></button></span>
+		</div>
+		
+	</div>
+	
+	<script src="xml2json.js"></script>
+	
+	<script>
+	
+		function createLoader(){
+			var loader = document.createElement("i");
+			loader.classList.add("fa","fa-cog","fa-spin","loader");
+			return loader;
+		}
+		
+		function createBreak(){
+			var breakE = document.createElement("div");
+			breakE.classList.add("break");
+			return breakE;
+		}
+		
+		function createOption(name){
+			var option = document.createElement("option");
+			option.innerHTML = name;
+			return option;
+		}
+		
+		function tagDelete(event){
+			parent = event.target.parentNode;
+			event.target.parentNode.remove();
+		}
+		
+		function tagToggle(event){
+			if (event.target.innerHTML === "+"){
+				event.target.innerHTML = "-";
+			}
+			else if (event.target.innerHTML === "-"){
+				event.target.innerHTML = "+";
+			}
+		}
+		
+		function createTag(label){
+			var tag = document.createElement("span");
+			tag.classList.add("border","no-wrap");
+			
+			var b1 = document.createElement("button");
+			b1.classList.add("empty","button-style");
+			b1.innerHTML = label;
+			var b2 = document.createElement("button");
+			b2.classList.add("empty","button-style","vertical-line");
+			b2.innerHTML = "+";
+			
+			b1.addEventListener("click",tagDelete);
+			b2.addEventListener("click",tagToggle);
+			
+			tag.appendChild(b1);
+			tag.appendChild(b2);
+			tag.id = label;
+			
+			return tag;
+		}
+		
+		var breakList = [];
+		
+		function groupDelete(event){
+			parent = event.target.parentNode;
+			parent.remove();
+		}
+		
+		function groupToggle(event){
+			var symbolList=["+","~","-"];
+			
+			event.target.innerHTML = symbolList[(symbolList.indexOf(event.target.innerHTML)+1)%3];
+		}
+		
+		function groupExpand(event){
+			arrow = event.target.childNodes[0];
+			if (arrow.classList.contains("fa-angle-down")){//expand
+				arrow.classList.remove("fa-angle-down");
+				arrow.classList.add("fa-angle-up");
+				
+				event.target.parentNode.parentNode.insertBefore(createBreak(),event.target.parentNode);
+				event.target.parentNode.parentNode.insertBefore(createBreak(),event.target.parentNode.nextSibling);
+				event.target.parentNode.style.flexGrow="1";
+				
+				event.target.parentNode.childNodes[0].style.width="75%";
+				event.target.parentNode.childNodes[5].style.display="flex";
+				
+			}else{//minimise
+				arrow.classList.remove("fa-angle-up");
+				arrow.classList.add("fa-angle-down");
+				
+				event.target.parentNode.nextSibling.remove();
+				event.target.parentNode.previousSibling.remove();
+				event.target.parentNode.style.flexGrow="0";
+				
+				event.target.parentNode.childNodes[0].style.width="5em";
+				event.target.parentNode.childNodes[5].style.display="none";
+			}
+		}
+		
+		function updateGroupSelector(){
+			groupSelector.innerHTML = "";
+			groupSelector.appendChild(createOption("no group"));
+			for(group of document.getElementsByClassName("group")){
+				groupSelector.appendChild(createOption(group.childNodes[0].value));
+			}
+		}
+		
+		function newName(){
+			var i= 1;
+			var finished = false;
+			var potentialName = "";
+			while (!finished){
+				potentialName = "group"+i.toString();
+				finished = true;
+				for (group of document.getElementsByClassName("group")){
+					if (group.childNodes[0].value == potentialName){
+						finished = false;
+					}
+				}
+				i+=1;
+			}
+			return potentialName;
+			
+		}
+		
+		function createGroup(){
+			var group = document.createElement("span");
+			group.classList.add("group","border","no-wrap");
+			
+			var input = document.createElement("input");
+			input.classList.add("empty","search-bar-input")
+			input.type = "text";
+			input.value = newName();
+			input.style.flexGrow="1";
+			input.style.width="5em";
+			input.addEventListener("input",updateGroupSelector);
+			
+			var b1 = document.createElement("button");
+			b1.classList.add("empty","button-style","vertical-line");
+			b1.innerHTML = "+";
+			
+			var b2 = document.createElement("button");
+			b2.classList.add("empty","button-style","vertical-line");
+			var arrow = document.createElement("i");
+			arrow.classList.add("fa","fa-angle-down");
+			arrow.style.pointerEvents ="none";
+			b2.appendChild(arrow);
+			
+			var b3 = document.createElement("button");
+			b3.classList.add("empty","button-style","vertical-line");
+			var trash = document.createElement("i");
+			trash.classList.add("fa","fa-trash-o");
+			trash.style.pointerEvents ="none";
+			b3.appendChild(trash);
+			
+			b1.addEventListener("click",groupToggle);
+			b2.addEventListener("click",groupExpand);
+			b3.addEventListener("click",groupDelete);
+			
+			var tagContainer = document.createElement("div");
+			tagContainer.classList.add("container-vertical-left","horizontal-line","child-margins");
+			tagContainer.style.display="none";
+			tagContainer.style.padding="2px";
+			tagContainer.innerHTML="tags go in here when this group is selected by group insertion";
+			
+			group.appendChild(input);
+			group.appendChild(b1);
+			group.appendChild(b2);
+			group.appendChild(b3);
+			group.appendChild(createBreak());
+			group.appendChild(tagContainer)
+			
+			return group;
+		}
+		
+		const groupSelector = document.getElementById("group-selector");
+		const searchBarInput = document.getElementById("search-bar-input");
+		const suggestionContainer = document.getElementById("suggestion-container");
+		const tagButtonContainer = document.getElementById("tag-button-container");
+		const postContainer = document.getElementById("post-container");
+		
+		const proxy_url = "https://pure-refuge-19558.herokuapp.com/";
+		const auto_url = "https://rule34.xxx/public/autocomplete.php?q=";
+		const query_url = "https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&"
+		
+		var page = 0;
+		var results = 100;
+		
+		searchBarInput.addEventListener('input',updateSearchbar);
+		
+		function updateSearchbar(){
+			if (searchBarInput.value === ""){
+				suggestionContainer.innerHTML = "";
+			}
+			else{
+				suggestionContainer.innerHTML = "";
+				suggestionContainer.appendChild(createLoader());
+				
+				var input_val = searchBarInput.value.replace(new RegExp(' ', 'g'),"_");
+	
+				fetch(proxy_url+auto_url+input_val)
+				.then((response) => response.json())
+				.then((data) => {
+					suggestionContainer.innerHTML = "";
+					if (searchBarInput.value !== ""){
+						for(entry of data){
+							var button = document.createElement("button");
+							button.classList.add("empty","button-style");
+							button.innerHTML = entry["label"];
+							
+							button.addEventListener("click",addTag);
+							suggestionContainer.appendChild(button);
+						}
+					}
+				});
+			}
+		}
+		
+		function addTag(event){
+			if (!getTags(true).includes(event.target.innerHTML)){
+				const selected = groupSelector.options[groupSelector.selectedIndex].text;
+				if (selected === "no group"){
+					tagButtonContainer.appendChild(createTag(event.target.innerHTML));
+				}
+				else{
+					for (group of document.getElementsByClassName("group")){
+						if (group.childNodes[0].value === selected){
+							if (group.childNodes[5].innerHTML == "tags go in here when this group is selected by group insertion"){
+								group.childNodes[5].innerHTML = "";
+							}
+							group.childNodes[5].appendChild(createTag(event.target.innerHTML));
+						}
+					}
+				}
+				searchBarInput.value = "";
+				updateSearchbar();
+			}
+		}
+		
+		function getTags(flat){
+			var toReturn = [];
+			
+			for (group of document.getElementsByClassName("group")){
+					const groupName = group.childNodes[0].value;
+					var groupList = [];
+					for (tagElement of group.childNodes[5].childNodes){
+						if (tagElement.classList){
+							if (flat == true){
+								toReturn.push(tagElement.childNodes[0].innerHTML);
+							}
+							else{
+								groupList.push(tagElement.childNodes[0].innerHTML);
+							}
+						}
+					}
+					
+					if (flat == false){
+						toReturn.push({"type":"group","value":groupList,"blacklist":group.childNodes[1].innerHTML});
+					}
+				}
+				
+			for (tagElement of tagButtonContainer.childNodes){
+				if (tagElement.classList){
+					if (!(tagElement.classList.contains("break")||tagElement.classList.contains("group"))){
+						
+						if (flat == true){
+							toReturn.push(tagElement.childNodes[0].innerHTML);
+						}
+						else{
+							toReturn.push({"type":"single","value":tagElement.childNodes[0].innerHTML,"blacklist":tagElement.childNodes[1].innerHTML});
+						}
+					}
+				}
+			}
+			return toReturn;
+		}
+		
+		function createFontAwesome(name){
+			var i = document.createElement("i");
+			i.classList.add("fa",name);
+			return i;
+		}
+		
+		function createPost(imageLink,tagList,likes){
+			//tagList=["big_penis (5)","big boobs (5)"];
+			//likes = likes || 0;
+			
+			/*
+			<div class="border" style="position:relative">
+			<div class="img-wrap">
+				<img src="https://wimg.rule34.xxx//images/5918/57565d24b5b41721cdd089a47c0e970c.png?6723939">
+			</div>
+			<div class="post-footer container-horizontal horizontal-line" style="justify-content:space-between;display:flex;">
+				<span><i class="fa fa-heart" ></i> 500 </span>
+				<a href="https://www.w3schools.com/"target="_blank" rel="noopener noreferrer" class="empty"><i class="fa fa-external-link"></i></a>
+			</div>
+			
+			<div class="container-horizontal child-margins horizontal-line"></div>
+			
+			<div class="border post-expand" ><button class="empty button-style" >expand post</button></div>
+			</div>
+			*/
+			
+			var post = document.createElement("div");
+			post.classList.add("border");
+			post.style.position = "relative";
+			
+			var imgWrap = document.createElement("div");
+			imgWrap.classList.add("img-wrap");
+			var img;
+			if (imageLink.substring(imageLink.length-4,imageLink.length)==".mp4"){
+				img = document.createElement("video");
+				img.src = imageLink;
+				img.autoplay = false;
+				img.muted = true;
+				img.controls = true;
+				img.loop = true;
+			}
+			else{
+				img = document.createElement("img");
+				img.src = imageLink;
+				img.loading = "lazy";
+				img.referrerPolicy = "no-referrer";
+			}
+			
+			imgWrap.appendChild(img);
+			post.appendChild(imgWrap);
+			
+			var footer = document.createElement("div");
+			footer.classList.add("post-footer","container-horizontal","horizontal-line");
+			footer.style.justifyContent="space-between";
+			footer.style.display="flex";
+			post.appendChild(footer);
+			
+			var score = document.createElement("span");
+			score.appendChild(createFontAwesome("fa-heart"));
+			score.appendChild(document.createTextNode(" "+likes.toString()));
+			footer.appendChild(score);
+			
+			var link = document.createElement("a");
+			link.classList.add("empty");
+			link.rel = "noopender noreferrer";
+			link.target="_blank"
+			link.href = imageLink;
+			link.appendChild(createFontAwesome("fa-external-link"));
+			footer.appendChild(link);
+			
+			var	expandTagContainer = document.createElement("div");
+			expandTagContainer.classList.add("container-horizontal","horizontal-line","child-margins");
+			expandTagContainer.style.display = "none";
+			expandTagContainer.style.overflowY ="auto";
+			expandTagContainer.style.maxHeight="20em";
+			post.appendChild(expandTagContainer);
+			
+			for (tag of tagList){
+				var buttonWrap = document.createElement("div");
+				buttonWrap.classList.add("border");
+				var button = document.createElement("button");
+				button.classList.add("empty","button-style");
+				button.innerHTML = tag;
+				button.addEventListener("click",postTag);
+				buttonWrap.appendChild(button);
+				expandTagContainer.appendChild(buttonWrap);
+			}
+			
+			var expandButton = document.createElement("div");
+			expandButton.classList.add("border","post-expand");
+			var button = document.createElement("button");
+			button.classList.add("empty","button-style");
+			button.innerHTML="expand post";
+			button.addEventListener("click",postExpand);
+			expandButton.appendChild(button);
+			post.appendChild(expandButton);
+			
+			postContainer.appendChild(document.createElement("br"));
+			postContainer.appendChild(post);
+			postContainer.appendChild(document.createElement("br"));
+			
+		}
+		
+		function postExpand(event){
+			post = event.target.parentNode.parentNode;
+			if (event.target.innerHTML == "expand post"){
+				event.target.innerHTML = "minimise post";
+				post.childNodes[2].style.display = "flex";
+			}
+			else if (event.target.innerHTML == "minimise post"){
+				event.target.innerHTML = "expand post";
+				post.childNodes[2].style.display = "none";
+			}
+		};
+		
+		function postTag(event){
+			sessionStorage.setItem("new-window-tag",event.target.innerHTML.split(" ")[0]);
+			window.open("https://sigilquiver.github.io/vanilla/");
+			console.log(sessionStorage.getItem("new-window-tag"));
+		}
+		
+		function showPages(){
+			for (pageWrap of document.getElementsByClassName("page-container")){
+				pageWrap.style.display="flex";
+				
+			}
+		}
+		
+		function setPageValue(){
+			page=Math.min(results-1,page);
+			page=Math.max(0,page);
+			for (pageWrap of document.getElementsByClassName("page-container")){pageWrap.childNodes[5].childNodes[1].value = page.toString();}
+			makeRequest();
+		}
+		
+		
+		
+		
+		
+		for (pageWrap of document.getElementsByClassName("page-container")){
+			pageWrap.childNodes[1].childNodes[0].addEventListener("click",(event)=>{page=0;setPageValue();});
+			pageWrap.childNodes[3].childNodes[0].addEventListener("click",(event)=>{page=Math.max(0,page-1);setPageValue();});
+			pageWrap.childNodes[5].childNodes[1].addEventListener("keyup",(event)=>{if(event.key === 'Enter' || event.keyCode === 13 || event.which === 13 ){page=event.target.value;setPageValue();}})
+			pageWrap.childNodes[7].childNodes[0].addEventListener("click",(event)=>{page=Math.min(results-1,page+1);setPageValue();});
+			pageWrap.childNodes[9].childNodes[0].addEventListener("click",(event)=>{page=results-1;setPageValue();});
+		}
+		
+		document.getElementById("new-group-button").addEventListener("click",(event) =>{
+			tagButtonContainer.appendChild(createGroup());
+			updateGroupSelector();
+		});
+		
+		function createQuery(){
+			query = "";
+			
+			for (dict of getTags(false)){
+				query += " "
+				
+				if (dict["type"] == "single"){
+					if (dict["blacklist"] == "-"){
+						query+="-";
+					}
+					query+=dict["value"].split(" ")[0];
+				}
+				
+				if (dict["type"] == "group"){
+					//query = query.substring(0,query.length-1);
+					if (dict["blacklist"] == "~"){
+						query+="( ";
+					}
+					for(value of dict["value"]){
+						if (dict["blacklist"] == "-"){query+="-"}
+						
+						query += value.split(" ")[0];
+						
+						if (dict["blacklist"] == "~"){query+=" ~ ";}
+						else{query+=" ";}
+					}
+					if (dict["blacklist"] == "~"){
+						query = query.substring(0,query.length-3);
+						query+=" )";
+					}
+					else{query = query.substring(0,query.length-1);}
+				
+				}
+			}
+			
+			var rating = document.getElementById("rating");
+			query+= " rating:"+rating.options[rating.selectedIndex].text;
+			
+			var sort = document.getElementById("score-sort");
+			query+= " sort:"+sort.options[sort.selectedIndex].text+":desc";
+			
+			var minScore = document.getElementById("min-score");
+			query+= " score:>="+(Math.max(minScore.value,0) || 0);
+			
+			query = query.substring(1,query.length);
+			
+			
+			console.log(query);
+			return query;
+		}
+		
+		function makeRequest(){
+			document.getElementById("results").scrollIntoViewIfNeeded();
+			url = proxy_url+query_url+"tags="+createQuery()+"&pid="+page.toString()+"&limit=15";
+			console.log(url);
+			fetch(url)
+			.then((response) => response.text())
+			.then(str => new window.DOMParser().parseFromString(str, "text/xml")).then((xml) => xmlToJson(xml))
+			.then((data) => {
+			
+				console.log(data);
+				postContainer.innerHTML="";
+				
+				document.getElementById("results").innerHTML = data["posts"]["@attributes"]["count"]+" posts";
+				
+				results = parseInt(data["posts"]["@attributes"]["count"]);
+				
+				for(dict of data["posts"]["post"]){
+					var score = dict["@attributes"]["score"];
+					var tags = dict["@attributes"]["tags"].split(" ");
+					tags.pop();
+					tags.splice(0,1);
+					var img = dict["@attributes"]["sample_url"];
+					createPost(img,tags,score);
+				}
+				
+				
+			});
+			
+			
+		}
+		
+		document.getElementById("tag-search-button").addEventListener("click",(event)=>{
+			makeRequest();
+			showPages();
+		})
+		
+		console.log(sessionStorage.getItem("new-window-tag"));
+		
+		if (sessionStorage.getItem("new-window-tag")){
+			tagButtonContainer.appendChild(createTag(sessionStorage.getItem("new-window-tag")));
+			makeRequest();
+		}
+		
+	</script>
+	
+</body>
+</html>
