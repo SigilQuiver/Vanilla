@@ -253,7 +253,7 @@
 			<span>
 			min score:
 			<span class="border">
-			<input type="number" class="empty search-bar-input" placeholder="0" style="width:5em;" id="min-score">
+			<input type="number" class="empty search-bar-input" placeholder="0" style="width:5em;" id="min-score" value="50">
 			</span>
 			</span>
 			
@@ -261,6 +261,7 @@
 			sort by:
 			<span class="border select child-margins" >
 			<select class="empty" id="score-sort">
+				<option>date</option>
 				<option>updated</option>
 				<option>score</option>
 			</select>
@@ -317,6 +318,7 @@
 	<script src="xml2json.js"></script>
 	
 	<script>
+		
 	
 		function createLoader(){
 			var loader = document.createElement("i");
@@ -350,22 +352,28 @@
 			}
 		}
 		
-		function createTag(label){
+		function createTag(label,inGroup){
+			if (inGroup === undefined){
+				inGroup = false;
+			}
+		
 			var tag = document.createElement("span");
 			tag.classList.add("border","no-wrap");
 			
 			var b1 = document.createElement("button");
 			b1.classList.add("empty","button-style");
 			b1.innerHTML = label;
-			var b2 = document.createElement("button");
-			b2.classList.add("empty","button-style","vertical-line");
-			b2.innerHTML = "+";
-			
 			b1.addEventListener("click",tagDelete);
-			b2.addEventListener("click",tagToggle);
-			
 			tag.appendChild(b1);
-			tag.appendChild(b2);
+			
+			if(!inGroup){
+				var b2 = document.createElement("button");
+				b2.classList.add("empty","button-style","vertical-line");
+				b2.innerHTML = "+";
+				b2.addEventListener("click",tagToggle);
+				tag.appendChild(b2);
+			}
+			
 			tag.id = label;
 			
 			return tag;
@@ -436,14 +444,16 @@
 			
 		}
 		
-		function createGroup(){
+		function createGroup(name){
+			name = name || newName();
+		
 			var group = document.createElement("span");
 			group.classList.add("group","border","no-wrap");
 			
 			var input = document.createElement("input");
 			input.classList.add("empty","search-bar-input")
 			input.type = "text";
-			input.value = newName();
+			input.value = name;
 			input.style.flexGrow="1";
 			input.style.width="5em";
 			input.addEventListener("input",updateGroupSelector);
@@ -471,7 +481,7 @@
 			b3.addEventListener("click",groupDelete);
 			
 			var tagContainer = document.createElement("div");
-			tagContainer.classList.add("container-vertical-left","horizontal-line","child-margins");
+			tagContainer.classList.add("container-horizontal","horizontal-line","child-margins");
 			tagContainer.style.display="none";
 			tagContainer.style.padding="2px";
 			tagContainer.innerHTML="tags go in here when this group is selected by group insertion";
@@ -541,13 +551,23 @@
 							if (group.childNodes[5].innerHTML == "tags go in here when this group is selected by group insertion"){
 								group.childNodes[5].innerHTML = "";
 							}
-							group.childNodes[5].appendChild(createTag(event.target.innerHTML));
+							group.childNodes[5].appendChild(createTag(event.target.innerHTML,true));
 						}
 					}
 				}
 				searchBarInput.value = "";
 				updateSearchbar();
 			}
+		}
+		
+		function createGroupManual(name,tagList,blacklist){
+			var group = createGroup(name)
+			group.childNodes[1].innerHTML = blacklist;
+			group.childNodes[5].innerHTML = "";
+			for (tag of tagList){
+				group.childNodes[5].appendChild(createTag(tag,true));
+			}
+			tagButtonContainer.appendChild(group);
 		}
 		
 		function getTags(flat){
@@ -594,7 +614,7 @@
 			return i;
 		}
 		
-		function createPost(imageLink,tagList,likes){
+		function createPost(imageLink,tagList,likes,source){
 			//tagList=["big_penis (5)","big boobs (5)"];
 			//likes = likes || 0;
 			
@@ -649,6 +669,16 @@
 			score.appendChild(createFontAwesome("fa-heart"));
 			score.appendChild(document.createTextNode(" "+likes.toString()));
 			footer.appendChild(score);
+			
+			if (source){
+				var sourceLink = document.createElement("a");
+				sourceLink.classList.add("empty");
+				sourceLink.href = source;
+				sourceLink.rel = "noopender noreferrer";
+				sourceLink.target="_blank"
+				sourceLink.innerHTML = source;
+				footer.appendChild(sourceLink);
+			}
 			
 			var link = document.createElement("a");
 			link.classList.add("empty");
@@ -724,10 +754,6 @@
 			for (pageWrap of document.getElementsByClassName("page-container")){pageWrap.childNodes[5].childNodes[1].value = page.toString();}
 			makeRequest();
 		}
-		
-		
-		
-		
 		
 		for (pageWrap of document.getElementsByClassName("page-container")){
 			pageWrap.childNodes[1].childNodes[0].addEventListener("click",(event)=>{page=0;setPageValue();});
@@ -815,18 +841,18 @@
 					tags.pop();
 					tags.splice(0,1);
 					var img = dict["@attributes"]["sample_url"];
-					createPost(img,tags,score);
+					var source = dict["@attributes"]["source"];
+					createPost(img,tags,score,source);
 				}
 				
 				
 			});
-			
-			
 		}
 		
 		document.getElementById("tag-search-button").addEventListener("click",(event)=>{
 			makeRequest();
 			showPages();
+			page=1;
 		})
 		
 		console.log(sessionStorage.getItem("new-window-tag"));
@@ -834,13 +860,21 @@
 		if (sessionStorage.getItem("new-window-tag")){
 			tagButtonContainer.appendChild(createTag(sessionStorage.getItem("new-window-tag")));
 			var rating = document.getElementById("rating");
-			rating.selectedIndex = rating.options.indexOf(sessionStorage.getItem("new-window-rating"))
+			rating.selectedIndex = rating.options.namedItem(sessionStorage.getItem("new-window-rating"))
 			
 			sessionStorage.removeItem("new-window-tag");
 			sessionStorage.removeItem("new-window-rating");
 			
 			makeRequest();
 		}
+		
+		createGroupManual("cross-gender",["trap","futanari","solo_futa","futa_only"],"-");
+		createGroupManual("gay (male)",["solo_male","male_only","2boys","yaoi","male/male","gay"],"-");
+		createGroupManual("extreme",["hyper","hyper_penis","penile_penetration","cum-inflation","zoophilia","prolapse","scat"],"-");
+		createGroupManual("fetish",["bondage","pregnant","fart","fart_fetish","inflation","vore","giantess","expansion"],"-");
+		createGroupManual("furry",["mammal","reptile","furry","anthro","my_little_pony","horse","dog","dinosaur","animal-genitalia","feral"],"-");
+		createGroupManual("monster",["monster","tentacle"],"-");
+		createGroupManual("unfinished posts",["tagme"],"-");
 		
 	</script>
 	
