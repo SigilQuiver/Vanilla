@@ -23,8 +23,8 @@
         }
 		
 		::-webkit-scrollbar{
-			width:5px;
-			height:5px;
+			width:0.3em;
+			height:0.3em;
 		}
 		
 		::-webkit-scrollbar-track {
@@ -33,7 +33,7 @@
 		}
 		::-webkit-scrollbar-thumb{
 			background-color:cyan;
-			border-radius:2.5px;
+			border-radius:2em;
 		}
 		
 		
@@ -64,13 +64,13 @@
 		}
 		
 		.border{
-			border: 2px solid cyan;
-			border-radius:5px;
+			border: 0.15em solid cyan;
+			border-radius:0.3em;
 		}
 		
 		.outline{
-			outline: 2px solid cyan;
-			border-radius:5px;
+			outline: 1em solid cyan;
+			border-radius:0.3em;
 		}
 		
 		.empty{
@@ -87,24 +87,24 @@
 		}
 		
 		.child-margins > *{
-			margin:3px;
+			margin:0.3em;
 		}
 		
 		.middle-container{
 			height:auto;
 			transition: height 0.5s ease-in-out;
 			width: 70%;
-			max-width:800px;
+			max-width:50em;
 		}
 		
-		.search-bar-container .container-horizontal{background-color:transparent;transition: all 0.5s ease-in-out;padding:3px;}
+		.search-bar-container .container-horizontal{background-color:transparent;transition: all 0.5s ease-in-out;padding:0.3em;}
 		.search-bar-container .container-horizontal:focus-within{background-color:rgba(0,255,255,0.1);}
 		.search-bar-container .container-vertical-left{width:100%;}
 		.search-bar-container button{width:100%;text-align:left;}
 		
 		.search-bar-input{
 			position:relative;
-			border-radius:5px;
+			border-radius:0.3em;
 			
 			width:auto;
 			flex-grow:1;
@@ -118,14 +118,14 @@
 		.button-style{
 			background-color:transparent;
 			transition: all 0.5s ease-in-out;
-			padding:3px;
+			padding:0.3em;
 		}
 		.button-style:hover{
 			background-color:rgba(0,255,255,0.1);
 		}
 		
 		.loader{
-			padding:10px;
+			padding:0.6em;
 			font-size:250%;
 			margin:auto;
 		}
@@ -137,18 +137,18 @@
 		.reverse-color{
 			background-color:cyan;
 			color:#171740;
-			border-radius:5px;
+			border-radius:0.3em;
 		}
 		.reverse-color > *{
 			color:#171740;
 		}
 		
 		.vertical-line {
-			border-left:2px solid rgba(0,255,255,0.2);
+			border-left:0.15em solid rgba(0,255,255,0.2);
 		}
 		
 		.horizontal-line{
-			border-top:2px solid rgba(0,255,255,0.2);
+			border-top:0.15em solid rgba(0,255,255,0.2);
 			width:100%;
 			margin-top:0;
 		}
@@ -174,8 +174,8 @@
 		}
 		option{
 			background:#171740;
-			padding:4px;
-			border-radius:5px;
+			padding:0.3em;
+			border-radius:0.3em;
 		}
 		
 		img,video{
@@ -194,7 +194,7 @@
 		.post-footer{
 			display:block;
 			width:100%;
-			padding:4px;
+			padding:0.3em;
 		}
 		
 		.post-expand{
@@ -203,10 +203,16 @@
 			margin:auto;
 			top:100%;
 			left:35%;
-			border-radius: 0 0 5px 5px;
+			border-radius: 0 0 0.3em 0.3em;
 		}
 		
 		.post-expand button{width:100%;}
+		
+		*{
+			@media (min-width:600px){
+				font-size:200%;
+			} 
+		}
 		
     </style>
 	
@@ -273,14 +279,14 @@
 		
 		<!--tag+group container-->
 		
-		<div class="border middle-container container-horizontal child-margins" id="tag-button-container" style="min-height:1em;max-height:15em;overflow-x:auto;margin-bottom:0px;border-radius:5px 5px 5px 0px;">
+		<div class="border middle-container container-horizontal child-margins" id="tag-button-container" style="min-height:1em;max-height:15em;overflow-x:auto;margin-bottom:0px;border-radius:0.3em 0.3em 0.3em 0px;">
 			<div class="break" style="height:0;"></div>
 		</div>
 		
 		<!--group+search buttons-->
 		<div class="middle-container container-horizontal" style="margin:0;">
-		<div id="new-group-button" class="border" style="position:absolute;margin-top:0;margin-left:0;border-top:0;border-radius:0 0 5px 5px;align-self:flex-start;"><button class="empty button-style">new group</button></div>
-		<div class="border" style="display:block;margin-top:0;margin-left:auto;margin-right:auto;width:10em;border-top:0;border-radius:0 0 5px 5px;"><button id="tag-search-button" class="empty button-style">search with these tags</button></div>
+		<div id="new-group-button" class="border" style="position:absolute;margin-top:0;margin-left:0;border-top:0;border-radius:0 0 0.3em 0.3em;align-self:flex-start;"><button class="empty button-style">new group</button></div>
+		<div class="border" style="display:block;margin-top:0;margin-left:auto;margin-right:auto;width:10em;border-top:0;border-radius:0 0 0.3em 0.3em;"><button id="tag-search-button" class="empty button-style">search with these tags</button></div>
 		</div>
 		<br>
 		<h2 id="results"></h2>
@@ -483,7 +489,7 @@
 			var tagContainer = document.createElement("div");
 			tagContainer.classList.add("container-horizontal","horizontal-line","child-margins");
 			tagContainer.style.display="none";
-			tagContainer.style.padding="2px";
+			tagContainer.style.padding="0.3em";
 			tagContainer.innerHTML="tags go in here when this group is selected by group insertion";
 			
 			group.appendChild(input);
