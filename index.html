@@ -705,6 +705,8 @@
 		
 		function postTag(event){
 			sessionStorage.setItem("new-window-tag",event.target.innerHTML.split(" ")[0]);
+			var rating = document.getElementById("rating");
+			sessionStorage.setItem("new-window-rating",rating.options[rating.selectedIndex].text);
 			window.open("https://sigilquiver.github.io/vanilla/");
 			console.log(sessionStorage.getItem("new-window-tag"));
 		}
@@ -831,6 +833,12 @@
 		
 		if (sessionStorage.getItem("new-window-tag")){
 			tagButtonContainer.appendChild(createTag(sessionStorage.getItem("new-window-tag")));
+			var rating = document.getElementById("rating");
+			rating.selectedIndex = rating.options.indexOf(sessionStorage.getItem("new-window-rating"))
+			
+			sessionStorage.removeItem("new-window-tag");
+			sessionStorage.removeItem("new-window-rating");
+			
 			makeRequest();
 		}
 		
