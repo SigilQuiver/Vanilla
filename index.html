@@ -8,7 +8,7 @@
 
 
     <title>vanilla</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=0.8">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
 	<link href="https://fonts.googleapis.com/css?family=Nunito&display=swap" rel="stylesheet">
 	<link rel="icon" href="favicon.svg">
@@ -93,7 +93,7 @@
 		.middle-container{
 			height:auto;
 			transition: height 0.5s ease-in-out;
-			width: 70%;
+			width: 90%;
 			max-width:50em;
 		}
 		
@@ -107,6 +107,7 @@
 			border-radius:0.3em;
 			
 			width:auto;
+			max-width:none;
 			flex-grow:1;
 			transition: all 0.5s ease-in-out;
 		}
@@ -268,18 +269,21 @@
 			<i class="fa fa-arrows-v" style="position: absolute; right: 0; top: 0;"></i>
 			</span>
 			</span>
-			
+		
+		
 		</div class="selectors">
 		
+		<div class="middle-container container-horizontal" style="margin:0;">
+		<div id="new-group-button" class="border" style="border-radius:0.3em 0.3em 0 0;align-self:flex-start;margin-bottom:0;border-bottom:0;"><button class="empty button-style">new group</button></div>
+		</div>
 		<!--tag+group container-->
 		
-		<div class="border middle-container container-horizontal child-margins" id="tag-button-container" style="min-height:1em;max-height:15em;overflow-x:auto;margin-bottom:0px;border-radius:0.3em 0.3em 0.3em 0px;">
+		<div class="border middle-container container-horizontal child-margins" id="tag-button-container" style="min-height:1em;max-height:15em;overflow-x:auto;margin-top:0px;margin-bottom:0px;border-radius:0px 0.3em 0.3em 0.3em ;">
 			<div class="break" style="height:0;"></div>
 		</div>
 		
 		<!--group+search buttons-->
 		<div class="middle-container container-horizontal" style="margin:0;">
-		<div id="new-group-button" class="border" style="position:absolute;margin-top:0;margin-left:0;border-top:0;border-radius:0 0 0.3em 0.3em;align-self:flex-start;"><button class="empty button-style">new group</button></div>
 		<div class="border" style="display:block;margin-top:0;margin-left:auto;margin-right:auto;width:10em;border-top:0;border-radius:0 0 0.3em 0.3em;"><button id="tag-search-button" class="empty button-style">search with these tags</button></div>
 		</div>
 		<br>
@@ -288,13 +292,13 @@
 		
 		<!--page navigation (top)-->
 		<div class="page-container middle-container container-horizontal" style="display:none;justify-content:space-between;align-items:stretch">
-			<span class="border page-last" style="width:5em;display:inline-block;"><button class="empty button-style" style="width:100%;text-align:center;"><i class="fa fa-angle-double-left" style="pointer-events:none;"></i></button></span>
-			<span class="border page-previous" style="width:5em;display:inline-block;"><button class="empty button-style" style="width:100%;text-align:center;"><i class="fa fa-angle-left" style="pointer-events:none;"></i></button></span>
-			<span class="border page-input">
-			<input type="number" class="empty search-bar-input" placeholder="0" style="width:5em;text-align:center">
+			<span class="border page-last" style="width:15%;display:inline-block;"><button class="empty button-style" style="width:100%;text-align:center;"><i class="fa fa-angle-double-left" style="pointer-events:none;"></i></button></span>
+			<span class="border page-previous" style="width:15%;display:inline-block;"><button class="empty button-style" style="width:100%;text-align:center;"><i class="fa fa-angle-left" style="pointer-events:none;"></i></button></span>
+			<span class="border page-input" style="width:15%">
+			<input type="number" class="empty search-bar-input" placeholder="0" style="width:100%;text-align:center">
 			</span>
-			<span class="border page-next" style="width:5em;display:inline-block;"><button class="empty button-style" style="width:100%;text-align:center;"><i class="fa fa-angle-right" style="pointer-events:none;"></i></button></span>
-			<span class="border page-first" style="width:5em;display:inline-block;"><button class="empty button-style" style="width:100%;text-align:center;"><i class="fa fa-angle-double-right" style="pointer-events:none;"></i></button></span>
+			<span class="border page-next" style="width:15%;display:inline-block;"><button class="empty button-style" style="width:100%;text-align:center;"><i class="fa fa-angle-right" style="pointer-events:none;"></i></button></span>
+			<span class="border page-first" style="width:15%;display:inline-block;"><button class="empty button-style" style="width:100%;text-align:center;"><i class="fa fa-angle-double-right" style="pointer-events:none;"></i></button></span>
 		</div>
 		<br>
 		
@@ -304,13 +308,13 @@
 		<!--page navigation (bot)-->
 		<br>
 		<div class="page-container middle-container container-horizontal" style="display:none;justify-content:space-between;align-items:stretch">
-			<span class="border page-last" style="width:5em;display:inline-block;"><button class="empty button-style" style="width:100%;text-align:center;"><i class="fa fa-angle-double-left" style="pointer-events:none;"></i></button></span>
-			<span class="border page-previous" style="width:5em;display:inline-block;"><button class="empty button-style" style="width:100%;text-align:center;"><i class="fa fa-angle-left" style="pointer-events:none;"></i></button></span>
-			<span class="border page-input">
-			<input type="number" class="empty search-bar-input" placeholder="0" style="width:5em;text-align:center">
+			<span class="border page-last" style="width:15%;display:inline-block;"><button class="empty button-style" style="width:100%;text-align:center;"><i class="fa fa-angle-double-left" style="pointer-events:none;"></i></button></span>
+			<span class="border page-previous" style="width:15%;display:inline-block;"><button class="empty button-style" style="width:100%;text-align:center;"><i class="fa fa-angle-left" style="pointer-events:none;"></i></button></span>
+			<span class="border page-input" style="width:15%">
+			<input type="number" class="empty search-bar-input" placeholder="0" style="width:100%;text-align:center">
 			</span>
-			<span class="border page-next" style="width:5em;display:inline-block;"><button class="empty button-style" style="width:100%;text-align:center;"><i class="fa fa-angle-right" style="pointer-events:none;"></i></button></span>
-			<span class="border page-first" style="width:5em;display:inline-block;"><button class="empty button-style" style="width:100%;text-align:center;"><i class="fa fa-angle-double-right" style="pointer-events:none;"></i></button></span>
+			<span class="border page-next" style="width:15%;display:inline-block;"><button class="empty button-style" style="width:100%;text-align:center;"><i class="fa fa-angle-right" style="pointer-events:none;"></i></button></span>
+			<span class="border page-first" style="width:15%;display:inline-block;"><button class="empty button-style" style="width:100%;text-align:center;"><i class="fa fa-angle-double-right" style="pointer-events:none;"></i></button></span>
 		</div>
 		
 	</div>
@@ -402,7 +406,6 @@
 				event.target.parentNode.parentNode.insertBefore(createBreak(),event.target.parentNode.nextSibling);
 				event.target.parentNode.style.flexGrow="1";
 				
-				event.target.parentNode.childNodes[0].style.width="75%";
 				event.target.parentNode.childNodes[5].style.display="flex";
 				
 			}else{//minimise
@@ -413,7 +416,6 @@
 				event.target.parentNode.previousSibling.remove();
 				event.target.parentNode.style.flexGrow="0";
 				
-				event.target.parentNode.childNodes[0].style.width="5em";
 				event.target.parentNode.childNodes[5].style.display="none";
 			}
 		}
@@ -449,18 +451,20 @@
 		
 			var group = document.createElement("span");
 			group.classList.add("group","border","no-wrap");
+			group.style.display="block-inline";
 			
 			var input = document.createElement("input");
 			input.classList.add("empty","search-bar-input")
 			input.type = "text";
 			input.value = name;
 			input.style.flexGrow="1";
-			input.style.width="5em";
+			input.style.width="70%";
 			input.addEventListener("input",updateGroupSelector);
 			
 			var b1 = document.createElement("button");
 			b1.classList.add("empty","button-style","vertical-line");
 			b1.innerHTML = "+";
+			b1.style.width="10%";
 			
 			var b2 = document.createElement("button");
 			b2.classList.add("empty","button-style","vertical-line");
@@ -468,6 +472,7 @@
 			arrow.classList.add("fa","fa-angle-down");
 			arrow.style.pointerEvents ="none";
 			b2.appendChild(arrow);
+			b2.style.width="10%";
 			
 			var b3 = document.createElement("button");
 			b3.classList.add("empty","button-style","vertical-line");
@@ -475,6 +480,7 @@
 			trash.classList.add("fa","fa-trash-o");
 			trash.style.pointerEvents ="none";
 			b3.appendChild(trash);
+			b3.style.width="10%";
 			
 			b1.addEventListener("click",groupToggle);
 			b2.addEventListener("click",groupExpand);
