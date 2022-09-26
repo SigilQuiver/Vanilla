@@ -242,9 +242,9 @@
 			rating:
 			<span class="border select child-margins">
 			<select class="empty" id="rating">
-				<option>safe</option>
-				<option>questionable</option>
 				<option>explicit</option>
+				<option>questionable</option>
+				<option>safe</option>
 				
 			</select>
 			<i class="fa fa-arrows-v" style="position: absolute; right: 0; top: 0;"></i>
@@ -651,9 +651,11 @@
 				img = document.createElement("video");
 				img.src = imageLink;
 				img.autoplay = false;
-				img.muted = true;
+				img.muted = false;
 				img.controls = true;
 				img.loop = true;
+				img.loading = "lazy";
+				img.referrerPolicy = "no-referrer";
 			}
 			else{
 				img = document.createElement("img");
