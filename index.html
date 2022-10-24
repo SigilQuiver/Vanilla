@@ -546,6 +546,8 @@
 			}
 		}
 		
+		
+		
 		function addTag(event){
 			if (!getTags(true).includes(event.target.innerHTML)){
 				const selected = groupSelector.options[groupSelector.selectedIndex].text;
@@ -699,12 +701,39 @@
 			footer.appendChild(link);
 			
 			var	expandTagContainer = document.createElement("div");
-			expandTagContainer.classList.add("container-horizontal","horizontal-line","child-margins");
+			//expandTagContainer.classList.add("middle-container");//"container-horizontal","horizontal-line","child-margins");
 			expandTagContainer.style.display = "none";
 			expandTagContainer.style.overflowY ="auto";
 			expandTagContainer.style.maxHeight="20em";
-			post.appendChild(expandTagContainer);
 			
+			expandTagContainer.style.flexDirection="column";
+			post.appendChild(expandTagContainer);
+			expandTagContainer.innerHTML = "loading lmao";
+			
+			
+			getTypes(tagList).then((types)=>{
+				expandTagContainer.innerHTML = "";
+				
+				console.log(types)
+				
+				for (type in types){
+					expandTagContainer.appendChild(document.createTextNode(type));
+					var tagsContainer = document.createElement("div");
+					tagsContainer.classList.add("container-horizontal","horizontal-line","child-margins");
+					expandTagContainer.appendChild(tagsContainer);
+					for (label of types[type]){
+						var buttonWrap = document.createElement("div");
+						buttonWrap.classList.add("border");
+						var button = document.createElement("button");
+						button.classList.add("empty","button-style");
+						button.innerHTML = label;
+						button.addEventListener("click",postTag);
+						buttonWrap.appendChild(button);
+						tagsContainer.appendChild(buttonWrap);
+					}
+				}
+			});
+			/*
 			for (tag of tagList){
 				var buttonWrap = document.createElement("div");
 				buttonWrap.classList.add("border");
@@ -715,6 +744,7 @@
 				buttonWrap.appendChild(button);
 				expandTagContainer.appendChild(buttonWrap);
 			}
+			*/
 			
 			var expandButton = document.createElement("div");
 			expandButton.classList.add("border","post-expand");
@@ -859,10 +889,43 @@
 			});
 		}
 		
+		function autoComplete(input_val){
+			return fetch(proxy_url+auto_url+input_val)
+			.then((response) => response.json())
+			.then((data) => {
+				return data;
+			});
+		}
+		
+		async function getTypes(tags){
+		
+			var promises = [];
+			
+			for(tagLabel of tags){
+				tag = tagLabel.split(" ")[0];
+				promises.push(autoComplete(tag).then((data)=>{return data[0]}))
+			}
+			
+			var finished = await Promise.all(promises).then((data)=>{return data;})
+			
+			tagTypes = {}
+			
+			for (result of finished){
+				if (!tagTypes[result["type"]]){
+					tagTypes[result["type"]] = [];
+				}
+				tagTypes[result["type"]].push(result["label"]);
+			}
+			
+			return tagTypes;
+		}
+		
 		document.getElementById("tag-search-button").addEventListener("click",(event)=>{
+			page=0;
+			pageWrap.childNodes[5].childNodes[1].value = "";
 			makeRequest();
 			showPages();
-			page=1;
+			
 		})
 		
 		console.log(sessionStorage.getItem("new-window-tag"));
@@ -878,12 +941,12 @@
 			makeRequest();
 		}
 		
-		createGroupManual("cross-gender",["trap","futanari","solo_futa","futa_only"],"-");
+		//createGroupManual("cross-gender",["trap","futanari","solo_futa","futa_only"],"-");
 		createGroupManual("gay (male)",["solo_male","male_only","2boys","yaoi","male/male","gay"],"-");
-		createGroupManual("extreme",["hyper","hyper_penis","penile_penetration","cum-inflation","prolapse","scat"],"-");
+		createGroupManual("extreme",["hyper","hyper_penis","penile_penetration","prolapse","scat"],"-");
 		createGroupManual("fetish",["bondage","pregnant","fart","fart_fetish","inflation","vore","giantess","expansion"],"-");
-		createGroupManual("furry",["mammal","reptile","furry","anthro","my_little_pony","horse","dog","dinosaur","animal-genitalia","feral","zoophilia"],"-");
-		createGroupManual("monster",["monster","tentacle"],"-");
+		//createGroupManual("furry",["mammal","reptile","furry","anthro","my_little_pony","horse","dog","dinosaur","animal-genitalia","feral","zoophilia"],"-");
+		//createGroupManual("monster",["monster","tentacle"],"-");
 		
 	</script>
 	
