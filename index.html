@@ -243,6 +243,7 @@
 			rating:
 			<span class="border select child-margins">
 			<select class="empty" id="rating">
+				<option>none</option>
 				<option>explicit</option>
 				<option>questionable</option>
 				<option>safe</option>
@@ -263,6 +264,7 @@
 			sort by:
 			<span class="border select child-margins" >
 			<select class="empty" id="score-sort">
+				<option>none</option>
 				<option>date</option>
 				<option>updated</option>
 				<option>score</option>
@@ -844,10 +846,14 @@
 			}
 			
 			var rating = document.getElementById("rating");
-			query+= " rating:"+rating.options[rating.selectedIndex].text;
+			if (rating.options[rating.selectedIndex].text != "none"){
+				query+= " rating:"+rating.options[rating.selectedIndex].text;
+			}
 			
 			var sort = document.getElementById("score-sort");
-			query+= " sort:"+sort.options[sort.selectedIndex].text+":desc";
+			if (sort.options[sort.selectedIndex].text != "none"){
+				query+= " sort:"+sort.options[sort.selectedIndex].text+":desc";
+			}
 			
 			var minScore = document.getElementById("min-score");
 			query+= " score:>="+(Math.max(minScore.value,0) || 0);
@@ -942,8 +948,8 @@
 		}
 		
 		//createGroupManual("cross-gender",["trap","futanari","solo_futa","futa_only"],"-");
-		createGroupManual("gay (male)",["solo_male","male_only","2boys","yaoi","male/male","gay"],"-");
-		createGroupManual("extreme",["hyper","hyper_penis","penile_penetration","prolapse","scat"],"-");
+		createGroupManual("gay (male)",["solo_male","male_only","2boys","yaoi","gay"],"-");
+		createGroupManual("extreme",["penile_penetration","prolapse","scat"],"-");
 		createGroupManual("fetish",["bondage","pregnant","fart","fart_fetish","inflation","vore","giantess","expansion"],"-");
 		//createGroupManual("furry",["mammal","reptile","furry","anthro","my_little_pony","horse","dog","dinosaur","animal-genitalia","feral","zoophilia"],"-");
 		//createGroupManual("monster",["monster","tentacle"],"-");
