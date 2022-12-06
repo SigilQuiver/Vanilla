@@ -323,6 +323,7 @@
 	</div>
 	
 	<script src="xml2json.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/fetch-jsonp/1.0.6/fetch-jsonp.min.js"></script>
 	
 	<script>
 		
@@ -511,7 +512,7 @@
 		const tagButtonContainer = document.getElementById("tag-button-container");
 		const postContainer = document.getElementById("post-container");
 		
-		const proxy_url = "https://pure-refuge-19558.herokuapp.com/";
+		const proxy_url = "https://api.allorigins.win/raw?url=";
 		const auto_url = "https://rule34.xxx/public/autocomplete.php?q=";
 		const query_url = "https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&"
 		
@@ -519,6 +520,10 @@
 		var results = 100;
 		
 		searchBarInput.addEventListener('input',updateSearchbar);
+		
+		var post_tags = {};
+		var autocomplete_controller = null;//new AbortController();
+		var posts_controller = null;// new AbortController();
 		
 		function updateSearchbar(){
 			if (searchBarInput.value === ""){
@@ -529,8 +534,12 @@
 				suggestionContainer.appendChild(createLoader());
 				
 				var input_val = searchBarInput.value.replace(new RegExp(' ', 'g'),"_");
-	
-				fetch(proxy_url+auto_url+input_val)
+				if (autocomplete_controller){
+					autocomplete_controller.abort();
+				}
+				autocomplete_controller = new AbortController();
+				signal = autocomplete_controller.signal;
+				fetch(proxy_url+auto_url+input_val,{signal})
 				.then((response) => response.json())
 				.then((data) => {
 					suggestionContainer.innerHTML = "";
@@ -625,7 +634,7 @@
 			return i;
 		}
 		
-		function createPost(imageLink,tagList,likes,source){
+		function createPost(imageLink,tagList,likes,source,id){
 			//tagList=["big_penis (5)","big boobs (5)"];
 			//likes = likes || 0;
 			
@@ -712,7 +721,7 @@
 			post.appendChild(expandTagContainer);
 			expandTagContainer.innerHTML = "loading lmao";
 			
-			
+			/*
 			getTypes(tagList).then((types)=>{
 				expandTagContainer.innerHTML = "";
 				
@@ -735,6 +744,7 @@
 					}
 				}
 			});
+			*/
 			/*
 			for (tag of tagList){
 				var buttonWrap = document.createElement("div");
@@ -761,13 +771,46 @@
 			postContainer.appendChild(post);
 			postContainer.appendChild(document.createElement("br"));
 			
+			post.id = id;
+			post_tags[id] = tagList;
+			
 		}
 		
 		function postExpand(event){
 			post = event.target.parentNode.parentNode;
+			id = post.id
+
 			if (event.target.innerHTML == "expand post"){
 				event.target.innerHTML = "minimise post";
 				post.childNodes[2].style.display = "flex";
+				
+				if (post_tags[id]){
+					console.log(post.childNodes[2])
+					getTypes(post_tags[id]).then((types)=>{
+						post.childNodes[2].innerHTML = "";
+						
+						console.log(types)
+						
+						for (type in types){
+							post.childNodes[2].appendChild(document.createTextNode(type));
+							var tagsContainer = document.createElement("div");
+							tagsContainer.classList.add("container-horizontal","horizontal-line","child-margins");
+							post.childNodes[2].appendChild(tagsContainer);
+							for (label of types[type]){
+								var buttonWrap = document.createElement("div");
+								buttonWrap.classList.add("border");
+								var button = document.createElement("button");
+								button.classList.add("empty","button-style");
+								button.innerHTML = label;
+								button.addEventListener("click",postTag);
+								buttonWrap.appendChild(button);
+								tagsContainer.appendChild(buttonWrap);
+							}
+						}
+					});
+					post_tags[id] = null;
+				}
+				
 			}
 			else if (event.target.innerHTML == "minimise post"){
 				event.target.innerHTML = "expand post";
@@ -866,21 +909,29 @@
 		}
 		
 		function makeRequest(){
+			
 			document.getElementById("results").scrollIntoViewIfNeeded();
-			url = proxy_url+query_url+"tags="+createQuery()+"&pid="+page.toString()+"&limit=15";
+			url = query_url+"tags="+createQuery()+"&pid="+page.toString()+"&limit=15";
 			console.log(url);
-			fetch(url)
+			if (posts_controller) {
+				posts_controller.abort()
+			}
+			posts_controller = new AbortController();
+			signal = posts_controller.signal;
+			fetch(url,{signal})
 			.then((response) => response.text())
 			.then(str => new window.DOMParser().parseFromString(str, "text/xml")).then((xml) => xmlToJson(xml))
 			.then((data) => {
 			
 				console.log(data);
+				var post_tags = {};
 				postContainer.innerHTML="";
 				
 				document.getElementById("results").innerHTML = data["posts"]["@attributes"]["count"]+" posts";
 				
 				results = parseInt(data["posts"]["@attributes"]["count"]);
 				
+				i = 1
 				for(dict of data["posts"]["post"]){
 					var score = dict["@attributes"]["score"];
 					var tags = dict["@attributes"]["tags"].split(" ");
@@ -888,7 +939,9 @@
 					tags.splice(0,1);
 					var img = dict["@attributes"]["sample_url"];
 					var source = dict["@attributes"]["source"];
-					createPost(img,tags,score,source);
+					createPost(img,tags,score,source,"post-"+parseInt(i));
+					
+					i+=1
 				}
 				
 				
@@ -906,13 +959,20 @@
 		async function getTypes(tags){
 		
 			var promises = [];
-			
+			var i = 0;
 			for(tagLabel of tags){
+				if (i == 10){
+					await Promise.all(promises)
+					i=0;
+				}
 				tag = tagLabel.split(" ")[0];
 				promises.push(autoComplete(tag).then((data)=>{return data[0]}))
+				i += 1;
 			}
 			
-			var finished = await Promise.all(promises).then((data)=>{return data;})
+			var finished = await Promise.all(promises).then((data)=>{return data;});
+			
+			
 			
 			tagTypes = {}
 			
@@ -945,6 +1005,7 @@
 			sessionStorage.removeItem("new-window-rating");
 			
 			makeRequest();
+			showPages();
 		}
 		
 		//createGroupManual("cross-gender",["trap","futanari","solo_futa","futa_only"],"-");
