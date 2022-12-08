@@ -272,6 +272,17 @@
 			<i class="fa fa-arrows-v" style="position: absolute; right: 0; top: 0;"></i>
 			</span>
 			</span>
+			
+			<span>
+			tag types:
+			<span class="border select child-margins" >
+			<select class="empty" id="type">
+				<option>false</option>
+				<option>true</option>
+			</select>
+			<i class="fa fa-arrows-v" style="position: absolute; right: 0; top: 0;"></i>
+			</span>
+			</span>
 		
 		
 		</div class="selectors">
@@ -526,10 +537,12 @@
 		var posts_controller = null;// new AbortController();
 		
 		function updateSearchbar(){
+		
 			if (searchBarInput.value === ""){
 				suggestionContainer.innerHTML = "";
 			}
 			else{
+			
 				suggestionContainer.innerHTML = "";
 				suggestionContainer.appendChild(createLoader());
 				
@@ -783,32 +796,52 @@
 			if (event.target.innerHTML == "expand post"){
 				event.target.innerHTML = "minimise post";
 				post.childNodes[2].style.display = "flex";
-				
-				if (post_tags[id]){
-					console.log(post.childNodes[2])
-					getTypes(post_tags[id]).then((types)=>{
-						post.childNodes[2].innerHTML = "";
+				post.childNodes[2].innerHTML = "";
+				var type = document.getElementById("type");
+				if (type.options[type.selectedIndex].text == "false"){
+					var tagsContainer = document.createElement("div");
+					tagsContainer.classList.add("container-horizontal","child-margins");
+					for (label of post_tags[id]){
+						var buttonWrap = document.createElement("div");
+						buttonWrap.classList.add("border");
+						var button = document.createElement("button");
+						button.classList.add("empty","button-style");
+						button.innerHTML = label;
+						button.addEventListener("click",postTag);
+						buttonWrap.appendChild(button);
+						tagsContainer.appendChild(buttonWrap);
+					}
+					post.childNodes[2].appendChild(tagsContainer);
+				}
+				else{
+					if (post_tags[id]){
 						
-						console.log(types)
-						
-						for (type in types){
-							post.childNodes[2].appendChild(document.createTextNode(type));
-							var tagsContainer = document.createElement("div");
-							tagsContainer.classList.add("container-horizontal","horizontal-line","child-margins");
-							post.childNodes[2].appendChild(tagsContainer);
-							for (label of types[type]){
-								var buttonWrap = document.createElement("div");
-								buttonWrap.classList.add("border");
-								var button = document.createElement("button");
-								button.classList.add("empty","button-style");
-								button.innerHTML = label;
-								button.addEventListener("click",postTag);
-								buttonWrap.appendChild(button);
-								tagsContainer.appendChild(buttonWrap);
+						console.log(post.childNodes[2])
+						const temp_tags = post_tags[id].map((x)=>x);
+						post_tags[id] = null;
+						getTypes(temp_tags).then((types)=>{
+							post.childNodes[2].innerHTML = "";
+							
+							console.log(types)
+							
+							for (type in types){
+								post.childNodes[2].appendChild(document.createTextNode(type));
+								var tagsContainer = document.createElement("div");
+								tagsContainer.classList.add("container-horizontal","horizontal-line","child-margins");
+								post.childNodes[2].appendChild(tagsContainer);
+								for (label of types[type]){
+									var buttonWrap = document.createElement("div");
+									buttonWrap.classList.add("border");
+									var button = document.createElement("button");
+									button.classList.add("empty","button-style");
+									button.innerHTML = label;
+									button.addEventListener("click",postTag);
+									buttonWrap.appendChild(button);
+									tagsContainer.appendChild(buttonWrap);
+								}
 							}
-						}
-					});
-					post_tags[id] = null;
+						}).catch((error)=>{post_tags[id] = temp_tags;event.target.innerHTML = "expand post";post.childNodes[2].style.display = "none";});
+					}
 				}
 				
 			}
@@ -950,14 +983,14 @@
 		
 		function autoComplete(input_val){
 			return fetch(proxy_url+auto_url+input_val)
-			.then((response) => response.json())
+			.then((response) => {console.log(response.body);response.json();})
 			.then((data) => {
 				return data;
 			});
 		}
 		
 		async function getTypes(tags){
-		
+			/*
 			var promises = [];
 			var i = 0;
 			for(tagLabel of tags){
@@ -982,8 +1015,33 @@
 				}
 				tagTypes[result["type"]].push(result["label"]);
 			}
+			*/
+			var result = {};
+			var temp_tags = [];
+			for (tag of tags){
+				temp_tags.push(tag)
+				if (temp_tags.length == 1){
+					var tagstring="";
+					for (tag of temp_tags){
+						tagstring += (tagstring.length==0 ? "":",")+tag;
+					}
+					temp_tags = [];
+					var request = await fetch("https://autocomplete-types.legoing-lego.workers.dev/?tags="+tagstring).then((data)=>data.json());
+					console.log(request);
+					for (key in request){
+						if (key in result){
+							for (tag of request[key]){
+								result[key].push(tag);
+							}
+						}
+						else{
+							result[key] = request[key];
+						}
+					}
+				}
+			}
 			
-			return tagTypes;
+			return result;
 		}
 		
 		document.getElementById("tag-search-button").addEventListener("click",(event)=>{
