@@ -796,9 +796,9 @@
 			if (event.target.innerHTML == "expand post"){
 				event.target.innerHTML = "minimise post";
 				post.childNodes[2].style.display = "flex";
-				post.childNodes[2].innerHTML = "";
 				var type = document.getElementById("type");
 				if (type.options[type.selectedIndex].text == "false"){
+					post.childNodes[2].innerHTML = "";
 					var tagsContainer = document.createElement("div");
 					tagsContainer.classList.add("container-horizontal","child-margins");
 					for (label of post_tags[id]){
@@ -841,6 +841,8 @@
 								}
 							}
 						}).catch((error)=>{post_tags[id] = temp_tags;event.target.innerHTML = "expand post";post.childNodes[2].style.display = "none";});
+					}else{
+						console.log("closed")
 					}
 				}
 				
