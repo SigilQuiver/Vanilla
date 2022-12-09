@@ -996,6 +996,8 @@
 				var type = data.getElementsByTagName("tag")[0].getAttribute("type");
 				type = types[type];
 				var name = data.getElementsByTagName("tag")[0].getAttribute("name");
+				var count = data.getElementsByTagName("tag")[0].getAttribute("count");
+				name = name+" ("+count+")";
 				return {"type":type,"name":name};
 			});
 		}
