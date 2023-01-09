@@ -1009,11 +1009,11 @@
 		}
 		
 		function storeTypes(tag,type){
-			session.setItem("tag-type-"+tag,type);
+			sessionStorage.setItem("tag-type-"+tag,type);
 		}
 		
 		function getType(tag){
-			return session.getItem("tag-type-"+tag);
+			return sessionStorage.getItem("tag-type-"+tag);
 		}
 		
 		async function getTypes(tags){
